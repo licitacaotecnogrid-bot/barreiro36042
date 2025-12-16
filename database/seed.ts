@@ -51,6 +51,10 @@ const professores = [
   { nome: 'Prof. Carlos Oliveira', email: 'carlos.oliveira@pucminas.br', senha: 'senha123', curso: 'Análise e Desenvolvimento de Sistemas' },
   { nome: 'Prof. Júlia Costa', email: 'julia.costa@pucminas.br', senha: 'senha123', curso: 'Análise e Desenvolvimento de Sistemas' },
   { nome: 'Prof. Marcos Santos', email: 'marcos.santos@pucminas.br', senha: 'senha123', curso: 'Análise e Desenvolvimento de Sistemas' },
+  { nome: 'Prof. Marina Rocha', email: 'marina.rocha@pucminas.br', senha: 'senha123', curso: 'Nutrição' },
+  { nome: 'Prof. Rafael Costa', email: 'rafael.costa@pucminas.br', senha: 'senha123', curso: 'Nutrição' },
+  { nome: 'Prof. Patricia Lima', email: 'patricia.lima@pucminas.br', senha: 'senha123', curso: 'Sistemas de Informação' },
+  { nome: 'Prof. Leonardo Alves', email: 'leonardo.alves@pucminas.br', senha: 'senha123', curso: 'Sistemas de Informação' },
 ];
 
 const insertProfessor = db.prepare(`
