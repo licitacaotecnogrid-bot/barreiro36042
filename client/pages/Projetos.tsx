@@ -92,7 +92,10 @@ const Projetos = () => {
               {displayedProjetosPesquisa.map((projeto) => {
                 const professor = getProfessorById(projeto.professorCoordenadorId);
                 return (
-                  <Card key={projeto.id} className="flex flex-col hover:shadow-lg transition-shadow">
+                  <Card key={projeto.id} className="flex flex-col hover:shadow-lg transition-shadow overflow-hidden">
+                    {projeto.imagem && (
+                      <img src={projeto.imagem} alt={projeto.titulo} className="w-full h-40 object-cover" />
+                    )}
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1">
@@ -162,7 +165,10 @@ const Projetos = () => {
               {displayedProjetosExtensao.map((projeto) => {
                 const professor = getProfessorById(projeto.professorCoordenadorId);
                 return (
-                  <Card key={projeto.id} className="flex flex-col hover:shadow-lg transition-shadow">
+                  <Card key={projeto.id} className="flex flex-col hover:shadow-lg transition-shadow overflow-hidden">
+                    {projeto.imagem && (
+                      <img src={projeto.imagem} alt={projeto.titulo} className="w-full h-40 object-cover" />
+                    )}
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1">
