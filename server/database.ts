@@ -1,23 +1,31 @@
-import Database from 'better-sqlite3';
 import * as path from 'path';
 import * as fs from 'fs';
 import { fileURLToPath } from 'url';
 
+// Try to import better-sqlite3, but make it optional since it's a native module
+// that may fail to compile in some environments (use Supabase instead in those cases)
+let Database: any = null;
+try {
+  Database = (await import('better-sqlite3')).default;
+} catch (err) {
+  console.warn('⚠️  better-sqlite3 failed to load. Using Supabase mode.');
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isDev = process.env.NODE_ENV !== 'production' || !process.env.DATABASE_URL;
-const dbPath = isDev ? path.join(__dirname, '../database/dev.db') : null;
+const dbPath = isDev && Database ? path.join(__dirname, '../database/dev.db') : null;
 
 // Use Supabase in production if DATABASE_URL is set, otherwise use SQLite locally
-let db: Database.Database | null = null;
+let db: any = null;
 let isSupabase = false;
 
-if (!isDev && process.env.DATABASE_URL) {
+if (process.env.DATABASE_URL) {
   // Using Supabase (PostgreSQL) - queries will work as-is since they're standard SQL
   isSupabase = true;
   console.log('🔗 Conectando ao banco de dados Supabase...');
-} else {
-  // Initialize SQLite for development
-  if (dbPath) {
+} else if (Database && dbPath) {
+  // Initialize SQLite for development (only if better-sqlite3 is available)
+  try {
     if (!fs.existsSync(dbPath)) {
       const dbDir = path.dirname(dbPath);
       if (!fs.existsSync(dbDir)) {
@@ -29,7 +37,7 @@ if (!isDev && process.env.DATABASE_URL) {
       const schemaPath = path.join(__dirname, '../database/init.sql');
       const schema = fs.readFileSync(schemaPath, 'utf-8');
 
-      schema.split(';').forEach((statement) => {
+      schema.split(';').forEach((statement: string) => {
         if (statement.trim()) {
           tempDb.exec(statement);
         }
@@ -43,7 +51,13 @@ if (!isDev && process.env.DATABASE_URL) {
 
     // Habilitar WAL mode para melhor concorrência
     db.pragma('journal_mode = WAL');
+    console.log('📁 SQLite database initialized');
+  } catch (err) {
+    console.error('❌ Failed to initialize SQLite:', err);
+    console.log('⚠️  Falling back to Supabase mode');
   }
+} else {
+  console.log('⚠️  No database configured. Set DATABASE_URL for Supabase or use Supabase mode.');
 }
 
 // Query executor helper for both SQLite and Supabase
