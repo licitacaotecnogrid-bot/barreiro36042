@@ -2,63 +2,66 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { fileURLToPath } from 'url';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 // Try to import better-sqlite3, but make it optional since it's a native module
 // that may fail to compile in some environments (use Supabase instead in those cases)
 let Database: any = null;
-try {
-  Database = (await import('better-sqlite3')).default;
-} catch (err) {
-  console.warn('⚠️  better-sqlite3 failed to load. Using Supabase mode.');
-}
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const isDev = process.env.NODE_ENV !== 'production' || !process.env.DATABASE_URL;
-const dbPath = isDev && Database ? path.join(__dirname, '../database/dev.db') : null;
-
-// Use Supabase in production if DATABASE_URL is set, otherwise use SQLite locally
 let db: any = null;
 let isSupabase = false;
 
-if (process.env.DATABASE_URL) {
-  // Using Supabase (PostgreSQL) - queries will work as-is since they're standard SQL
-  isSupabase = true;
-  console.log('🔗 Conectando ao banco de dados Supabase...');
-} else if (Database && dbPath) {
-  // Initialize SQLite for development (only if better-sqlite3 is available)
+// Attempt to initialize SQLite or Supabase
+async function initializeDatabase() {
+  // Check if using Supabase
+  if (process.env.DATABASE_URL) {
+    isSupabase = true;
+    console.log('🔗 Conectando ao banco de dados Supabase...');
+    return;
+  }
+
+  // Try to use SQLite for development
   try {
-    if (!fs.existsSync(dbPath)) {
-      const dbDir = path.dirname(dbPath);
-      if (!fs.existsSync(dbDir)) {
-        fs.mkdirSync(dbDir, { recursive: true });
+    Database = (await import('better-sqlite3')).default;
+    const isDev = process.env.NODE_ENV !== 'production' || !process.env.DATABASE_URL;
+    const dbPath = isDev ? path.join(__dirname, '../database/dev.db') : null;
+
+    if (dbPath) {
+      if (!fs.existsSync(dbPath)) {
+        const dbDir = path.dirname(dbPath);
+        if (!fs.existsSync(dbDir)) {
+          fs.mkdirSync(dbDir, { recursive: true });
+        }
+
+        // Criar o banco com o schema
+        const tempDb = new Database(dbPath);
+        const schemaPath = path.join(__dirname, '../database/init.sql');
+        const schema = fs.readFileSync(schemaPath, 'utf-8');
+
+        schema.split(';').forEach((statement: string) => {
+          if (statement.trim()) {
+            tempDb.exec(statement);
+          }
+        });
+
+        tempDb.close();
       }
 
-      // Criar o banco com o schema
-      const tempDb = new Database(dbPath);
-      const schemaPath = path.join(__dirname, '../database/init.sql');
-      const schema = fs.readFileSync(schemaPath, 'utf-8');
+      // Conectar ao banco
+      db = new Database(dbPath);
 
-      schema.split(';').forEach((statement: string) => {
-        if (statement.trim()) {
-          tempDb.exec(statement);
-        }
-      });
-
-      tempDb.close();
+      // Habilitar WAL mode para melhor concorrência
+      db.pragma('journal_mode = WAL');
+      console.log('📁 SQLite database initialized');
     }
-
-    // Conectar ao banco
-    db = new Database(dbPath);
-
-    // Habilitar WAL mode para melhor concorrência
-    db.pragma('journal_mode = WAL');
-    console.log('📁 SQLite database initialized');
   } catch (err) {
-    console.error('❌ Failed to initialize SQLite:', err);
-    console.log('⚠️  Falling back to Supabase mode');
+    console.warn('⚠️  SQLite initialization failed:', err instanceof Error ? err.message : err);
+    console.log('⚠️  Database module will not be available. Use Supabase for production.');
+    // This is ok - we can still run the API server, just without database support
   }
-} else {
-  console.log('⚠️  No database configured. Set DATABASE_URL for Supabase or use Supabase mode.');
 }
+
+// Initialize database immediately
+await initializeDatabase();
 
 // Query executor helper for both SQLite and Supabase
 function createQueryHelper(sqliteDb: Database.Database | null) {
