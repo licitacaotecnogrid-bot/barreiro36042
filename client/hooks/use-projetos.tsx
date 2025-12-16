@@ -19,6 +19,7 @@ export interface ProjetoPesquisa {
   metodologia: string;
   resultadosEsperados: string;
   imagem?: string | null;
+  curso?: string;
   professorCoordenadorId: number;
 }
 
@@ -31,6 +32,7 @@ export interface ProjetoExtensao {
   tipoPessoasProcuram: string;
   comunidadeEnvolvida: string;
   imagem?: string | null;
+  curso?: string;
   professorCoordenadorId: number;
 }
 
@@ -222,17 +224,11 @@ export function ProjetosProvider({ children }: { children: ReactNode }) {
   };
 
   const projetosPesquisadoCurso = currentUser?.curso
-    ? projetosPesquisa.filter((p) => {
-        const professor = professores.find((prof) => prof.id === p.professorCoordenadorId);
-        return professor?.curso === currentUser.curso;
-      })
+    ? projetosPesquisa.filter((p) => p.curso === currentUser.curso)
     : projetosPesquisa;
 
   const projetosExtensaodoCurso = currentUser?.curso
-    ? projetosExtensao.filter((p) => {
-        const professor = professores.find((prof) => prof.id === p.professorCoordenadorId);
-        return professor?.curso === currentUser.curso;
-      })
+    ? projetosExtensao.filter((p) => p.curso === currentUser.curso)
     : projetosExtensao;
 
   return (

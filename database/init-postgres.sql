@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS "Usuario" (
   email TEXT UNIQUE NOT NULL,
   senha TEXT NOT NULL,
   cargo TEXT NOT NULL,
+  curso TEXT,
   "criadoEm" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "atualizadoEm" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -104,6 +105,7 @@ CREATE TABLE IF NOT EXISTS "ProjetoPesquisa" (
   metodologia TEXT NOT NULL,
   "resultadosEsperados" TEXT NOT NULL,
   imagem TEXT,
+  curso TEXT,
   "professorCoordenadorId" INTEGER NOT NULL,
   "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -120,6 +122,7 @@ CREATE TABLE IF NOT EXISTS "ProjetoExtensao" (
   "tipoPessoasProcuram" TEXT NOT NULL,
   "comunidadeEnvolvida" TEXT NOT NULL,
   imagem TEXT,
+  curso TEXT,
   "professorCoordenadorId" INTEGER NOT NULL,
   "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

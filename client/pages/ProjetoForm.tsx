@@ -1,23 +1,37 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import { useProjetos } from "@/hooks/use-projetos";
 import { useProfessores } from "@/hooks/use-professores";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { toast } from "@/hooks/use-toast";
 
 const ProjetoForm = () => {
   const navigate = useNavigate();
   const { id, type } = useParams();
-  const { 
-    projetosPesquisa, 
-    projetosExtensao, 
-    addProjetoPesquisa, 
+  const { currentUser } = useCurrentUser();
+  const {
+    projetosPesquisa,
+    projetosExtensao,
+    addProjetoPesquisa,
     updateProjetoPesquisa,
     addProjetoExtensao,
     updateProjetoExtensao,
@@ -95,14 +109,28 @@ const ProjetoForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!titulo || !areaTematica || !descricao || !momentoOcorre || !professorCoordenadorId) {
-      toast({ title: "Erro", description: "Preencha todos os campos obrigatórios", variant: "destructive" });
+    if (
+      !titulo ||
+      !areaTematica ||
+      !descricao ||
+      !momentoOcorre ||
+      !professorCoordenadorId
+    ) {
+      toast({
+        title: "Erro",
+        description: "Preencha todos os campos obrigatórios",
+        variant: "destructive",
+      });
       return;
     }
 
     if (tipoProeto === "pesquisa") {
       if (!problemaPesq || !metodologia || !resultadosEsperados) {
-        toast({ title: "Erro", description: "Preencha todos os campos obrigatórios para pesquisa", variant: "destructive" });
+        toast({
+          title: "Erro",
+          description: "Preencha todos os campos obrigatórios para pesquisa",
+          variant: "destructive",
+        });
         return;
       }
 
@@ -115,19 +143,30 @@ const ProjetoForm = () => {
         metodologia,
         resultadosEsperados,
         imagem: imagemFile,
+        curso: currentUser?.curso || "Análise e Desenvolvimento de Sistemas",
         professorCoordenadorId: parseInt(professorCoordenadorId),
       };
 
       if (id) {
         updateProjetoPesquisa(parseInt(id), projetoPesquisa);
-        toast({ title: "Sucesso", description: "Projeto de pesquisa atualizado com sucesso" });
+        toast({
+          title: "Sucesso",
+          description: "Projeto de pesquisa atualizado com sucesso",
+        });
       } else {
         addProjetoPesquisa(projetoPesquisa);
-        toast({ title: "Sucesso", description: "Projeto de pesquisa criado com sucesso" });
+        toast({
+          title: "Sucesso",
+          description: "Projeto de pesquisa criado com sucesso",
+        });
       }
     } else {
       if (!tipoPessoasProcuram || !comunidadeEnvolvida) {
-        toast({ title: "Erro", description: "Preencha todos os campos obrigatórios para extensão", variant: "destructive" });
+        toast({
+          title: "Erro",
+          description: "Preencha todos os campos obrigatórios para extensão",
+          variant: "destructive",
+        });
         return;
       }
 
@@ -139,15 +178,22 @@ const ProjetoForm = () => {
         tipoPessoasProcuram,
         comunidadeEnvolvida,
         imagem: imagemFile,
+        curso: currentUser?.curso || "Análise e Desenvolvimento de Sistemas",
         professorCoordenadorId: parseInt(professorCoordenadorId),
       };
 
       if (id) {
         updateProjetoExtensao(parseInt(id), projetoExtensao);
-        toast({ title: "Sucesso", description: "Projeto de extensão atualizado com sucesso" });
+        toast({
+          title: "Sucesso",
+          description: "Projeto de extensão atualizado com sucesso",
+        });
       } else {
         addProjetoExtensao(projetoExtensao);
-        toast({ title: "Sucesso", description: "Projeto de extensão criado com sucesso" });
+        toast({
+          title: "Sucesso",
+          description: "Projeto de extensão criado com sucesso",
+        });
       }
     }
 
@@ -166,17 +212,28 @@ const ProjetoForm = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl sm:text-2xl">{id ? "Editar Projeto" : "Novo Projeto"}</CardTitle>
-          <CardDescription>Crie ou atualize um projeto de pesquisa ou extensão</CardDescription>
+          <CardTitle className="text-xl sm:text-2xl">
+            {id ? "Editar Projeto" : "Novo Projeto"}
+          </CardTitle>
+          <CardDescription>
+            Crie ou atualize um projeto de pesquisa ou extensão
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="tipo-projeto" className="text-xs sm:text-sm font-medium">
+                <Label
+                  htmlFor="tipo-projeto"
+                  className="text-xs sm:text-sm font-medium"
+                >
                   Tipo de Projeto *
                 </Label>
-                <Select value={tipoProeto} onValueChange={setTipoProeto} disabled={!!id}>
+                <Select
+                  value={tipoProeto}
+                  onValueChange={setTipoProeto}
+                  disabled={!!id}
+                >
                   <SelectTrigger id="tipo-projeto" className="mt-1">
                     <SelectValue />
                   </SelectTrigger>
@@ -188,16 +245,25 @@ const ProjetoForm = () => {
               </div>
 
               <div>
-                <Label htmlFor="professor" className="text-xs sm:text-sm font-medium">
+                <Label
+                  htmlFor="professor"
+                  className="text-xs sm:text-sm font-medium"
+                >
                   Professor Coordenador *
                 </Label>
-                <Select value={professorCoordenadorId} onValueChange={setProfessorCoordenadorId}>
+                <Select
+                  value={professorCoordenadorId}
+                  onValueChange={setProfessorCoordenadorId}
+                >
                   <SelectTrigger id="professor" className="mt-1">
                     <SelectValue placeholder="Selecione um professor" />
                   </SelectTrigger>
                   <SelectContent>
                     {professoresdoCurso.map((professor) => (
-                      <SelectItem key={professor.id} value={professor.id.toString()}>
+                      <SelectItem
+                        key={professor.id}
+                        value={professor.id.toString()}
+                      >
                         {professor.nome}
                       </SelectItem>
                     ))}
@@ -207,7 +273,10 @@ const ProjetoForm = () => {
             </div>
 
             <div>
-              <Label htmlFor="titulo" className="text-xs sm:text-sm font-medium">
+              <Label
+                htmlFor="titulo"
+                className="text-xs sm:text-sm font-medium"
+              >
                 Título *
               </Label>
               <Input
@@ -246,7 +315,10 @@ const ProjetoForm = () => {
             </div>
 
             <div>
-              <Label htmlFor="descricao" className="text-xs sm:text-sm font-medium">
+              <Label
+                htmlFor="descricao"
+                className="text-xs sm:text-sm font-medium"
+              >
                 Descrição *
               </Label>
               <Textarea
@@ -262,7 +334,10 @@ const ProjetoForm = () => {
             {tipoProeto === "pesquisa" ? (
               <>
                 <div>
-                  <Label htmlFor="problema" className="text-xs sm:text-sm font-medium">
+                  <Label
+                    htmlFor="problema"
+                    className="text-xs sm:text-sm font-medium"
+                  >
                     Problema de Pesquisa *
                   </Label>
                   <Textarea
@@ -276,7 +351,10 @@ const ProjetoForm = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="metodologia" className="text-xs sm:text-sm font-medium">
+                  <Label
+                    htmlFor="metodologia"
+                    className="text-xs sm:text-sm font-medium"
+                  >
                     Metodologia *
                   </Label>
                   <Textarea
@@ -290,7 +368,10 @@ const ProjetoForm = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="resultados" className="text-xs sm:text-sm font-medium">
+                  <Label
+                    htmlFor="resultados"
+                    className="text-xs sm:text-sm font-medium"
+                  >
                     Resultados Esperados *
                   </Label>
                   <Textarea
@@ -306,7 +387,10 @@ const ProjetoForm = () => {
             ) : (
               <>
                 <div>
-                  <Label htmlFor="publico" className="text-xs sm:text-sm font-medium">
+                  <Label
+                    htmlFor="publico"
+                    className="text-xs sm:text-sm font-medium"
+                  >
                     Tipo de Pessoas Procuradas *
                   </Label>
                   <Input
@@ -319,7 +403,10 @@ const ProjetoForm = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="comunidade" className="text-xs sm:text-sm font-medium">
+                  <Label
+                    htmlFor="comunidade"
+                    className="text-xs sm:text-sm font-medium"
+                  >
                     Comunidade Envolvida *
                   </Label>
                   <Input
@@ -334,7 +421,10 @@ const ProjetoForm = () => {
             )}
 
             <div>
-              <Label htmlFor="imagem" className="text-xs sm:text-sm font-medium">
+              <Label
+                htmlFor="imagem"
+                className="text-xs sm:text-sm font-medium"
+              >
                 Imagem do Projeto
               </Label>
               <Input
@@ -359,7 +449,12 @@ const ProjetoForm = () => {
               <Button type="submit" className="flex-1">
                 {id ? "Atualizar Projeto" : "Criar Projeto"}
               </Button>
-              <Button type="button" variant="outline" className="flex-1" onClick={() => navigate("/projetos")}>
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => navigate("/projetos")}
+              >
                 Cancelar
               </Button>
             </div>

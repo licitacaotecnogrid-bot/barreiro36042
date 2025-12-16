@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS usuario (
   email TEXT UNIQUE NOT NULL,
   senha TEXT NOT NULL,
   cargo TEXT NOT NULL,
+  curso TEXT,
   criado_em TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   atualizado_em TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -107,6 +108,7 @@ CREATE TABLE IF NOT EXISTS projeto_pesquisa (
   metodologia TEXT NOT NULL,
   resultados_esperados TEXT NOT NULL,
   imagem TEXT,
+  curso TEXT,
   professor_coordenador_id BIGINT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -123,6 +125,7 @@ CREATE TABLE IF NOT EXISTS projeto_extensao (
   tipo_pessoas_procuram TEXT NOT NULL,
   comunidade_envolvida TEXT NOT NULL,
   imagem TEXT,
+  curso TEXT,
   professor_coordenador_id BIGINT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
