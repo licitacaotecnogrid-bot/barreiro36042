@@ -115,6 +115,7 @@ const ProjetoForm = () => {
         metodologia,
         resultadosEsperados,
         imagem: imagemFile,
+        curso: currentUser?.curso || "Análise e Desenvolvimento de Sistemas",
         professorCoordenadorId: parseInt(professorCoordenadorId),
       };
 
@@ -139,6 +140,7 @@ const ProjetoForm = () => {
         tipoPessoasProcuram,
         comunidadeEnvolvida,
         imagem: imagemFile,
+        curso: currentUser?.curso || "Análise e Desenvolvimento de Sistemas",
         professorCoordenadorId: parseInt(professorCoordenadorId),
       };
 
