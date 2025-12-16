@@ -9,11 +9,13 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import { useProjetos } from "@/hooks/use-projetos";
 import { useProfessores } from "@/hooks/use-professores";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { toast } from "@/hooks/use-toast";
 
 const ProjetoForm = () => {
   const navigate = useNavigate();
   const { id, type } = useParams();
+  const { currentUser } = useCurrentUser();
   const { 
     projetosPesquisa, 
     projetosExtensao, 
