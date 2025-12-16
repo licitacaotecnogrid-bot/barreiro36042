@@ -35,12 +35,21 @@ const usuarios = [
 ];
 
 const insertUsuario = db.prepare(`
-  INSERT OR IGNORE INTO Usuario (nome, email, senha, cargo)
-  VALUES (?, ?, ?, ?)
+  INSERT OR IGNORE INTO Usuario (nome, email, senha, cargo, curso)
+  VALUES (?, ?, ?, ?, ?)
 `);
 
-usuarios.forEach((user) => {
-  insertUsuario.run(user.nome, user.email, user.senha, user.cargo);
+// Insert default users and test professor users from different courses
+const usuariosComCurso = [
+  { nome: 'Admin', email: 'admin@example.com', senha: 'admin123', cargo: 'Coordenador', curso: 'Análise e Desenvolvimento de Sistemas' },
+  { nome: 'Professor Teste', email: 'professor@example.com', senha: 'professor123', cargo: 'Professor', curso: 'Análise e Desenvolvimento de Sistemas' },
+  { nome: 'Aluno Teste', email: 'aluno@example.com', senha: 'aluno123', cargo: 'Aluno', curso: 'Análise e Desenvolvimento de Sistemas' },
+  { nome: 'Prof. Maria Nutrição', email: 'maria.nutricao@pucminas.br', senha: 'senha123', cargo: 'Professor', curso: 'Nutrição' },
+  { nome: 'Prof. João SI', email: 'joao.si@pucminas.br', senha: 'senha123', cargo: 'Professor', curso: 'Sistemas de Informação' },
+];
+
+usuariosComCurso.forEach((user) => {
+  insertUsuario.run(user.nome, user.email, user.senha, user.cargo, user.curso);
 });
 
 console.log('✅ Usuários inseridos!');
