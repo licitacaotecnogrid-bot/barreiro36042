@@ -35,7 +35,7 @@ export default function Dashboard() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col gap-1 sm:gap-2">
         <h2 className="text-xl sm:text-2xl font-semibold tracking-tight">Bem-vindo(a)</h2>
-        <p className="text-xs sm:text-sm text-muted-foreground">Principais notícias e eventos - Curso de Análise e Desenvolvimento de Sistemas</p>
+        <p className="text-xs sm:text-sm text-muted-foreground">Principais notícias e eventos - Curso de {currentUser?.curso || "Análise e Desenvolvimento de Sistemas"}</p>
       </div>
 
       {featuredEvent ? (
@@ -160,7 +160,7 @@ export default function Dashboard() {
         <div className="rounded-lg sm:rounded-xl border bg-card p-3 sm:p-5">
           <h3 className="text-sm sm:text-base font-medium">Status</h3>
           <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
-            Acompanhe os principais eventos e notícias da faculdade de Análise e Desenvolvimento de Sistemas.
+            Acompanhe os principais eventos e notícias da faculdade de {currentUser?.curso || "Análise e Desenvolvimento de Sistemas"}.
           </p>
         </div>
       </div>
